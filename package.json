@@ -1,6 +1,6 @@
 {
   "name": "lcd-digit",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Webcomponent lcd-digit following open-wc recommendations",
   "author": "@manufosela",
   "license": "Apache-2.0",
