@@ -1,13 +1,14 @@
 {
   "name": "lcd-digit",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Webcomponent lcd-digit following open-wc recommendations",
-  "author": "lcd-digit",
-  "license": "MIT",
+  "author": "@manufosela",
+  "license": "Apache-2.0",
   "main": "index.js",
   "module": "index.js",
   "scripts": {
     "start": "es-dev-server --app-index demo/index.html --node-resolve --open --watch",
+    "start:compatibility": "es-dev-server --app-index demo/index.html --compatibility all --node-resolve --open --watch",
     "lint:eslint": "eslint --ext .js,.html . --ignore-path .gitignore",
     "format:eslint": "eslint --ext .js,.html . --fix --ignore-path .gitignore",
     "lint:prettier": "prettier \"**/*.js\" --check --ignore-path .gitignore",
@@ -18,9 +19,11 @@
     "test:watch": "karma start --auto-watch=true --single-run=false",
     "test:update-snapshots": "karma start --update-snapshots",
     "test:prune-snapshots": "karma start --prune-snapshots",
-    "test:bs": "karma start karma.bs.config.js --coverage",
-    "storybook": "start-storybook --node-resolve --watch --open",
-    "storybook:build": "build-storybook"
+    "test:compatibility": "karma start --compatibility all --coverage",
+    "test:compatibility:watch": "karma start --compatibility all --auto-watch=true --single-run=false",
+    "test:bs": "karma start karma.bs.config.js --compatibility all --coverage",
+    "storybook": "start-storybook -p 9001",
+    "storybook:build": "build-storybook -o _site -s storybook-static"
   },
   "dependencies": {
     "lit-html": "^1.0.0",
@@ -37,7 +40,7 @@
     "webpack-merge": "^4.1.5",
     "@open-wc/testing-karma-bs": "^1.0.0",
     "@open-wc/testing": "^2.0.0",
-    "@open-wc/demoing-storybook": "^1.0.1"
+    "@open-wc/demoing-storybook": "^0.4.0"
   },
   "eslintConfig": {
     "extends": [
