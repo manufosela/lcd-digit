@@ -1,31 +1,46 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="en-GB">
 
-<head>
-  <meta charset="utf-8">
-  <style>
-    body {
-      background: #fafafa;
-    }
+  <head>
 
-  </style>
-</head>
+    <meta charset="utf-8" />
 
-<body>
-  <div id="demo"></div>
+    <style>
+      body {
+        background: #fafafa;
+      }
+      #demo {
+        width: 100vw;
+        display: flex;
+        flex-direction: row;
+      }
+      lcd-digit {
+        --dot-size: 16px;
+      }
+    </style>
 
-  <script type="module">
-    import { html, render } from 'lit-html';
-    import '../lcd-digit.js';
+    <script type="module" src="../lcd-digit.js"></script>
 
-    const title = 'Hello owc World!';
-    render(
-      html`
-        <lcd-digit digit="3"></lcd-digit>
-      `,
-      document.querySelector('#demo')
-    );
-  </script>
-</body>
+  </head>
+
+  <body>
+
+    <div id="demo">
+
+      <lcd-digit id="dec-minutes" digit="0" lcd-reference="dec-minutes"></lcd-digit>
+
+      <lcd-digit id="unit-minutes" digit="0" lcd-reference="dec-seconds"></lcd-digit>
+
+      <lcd-digit digit=":"></lcd-digit>
+
+      <lcd-digit id="dec-seconds" digit="5" lcd-reference="unit-seconds" max-value="6"> </lcd-digit>
+
+      <lcd-digit id="unit-seconds" digit="2" count></lcd-digit>
+
+    </div>
+
+  </body>
 
 </html>
+

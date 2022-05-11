@@ -2,17 +2,20 @@ import {
   html,
   css,
   LitElement
-} from 'lit-element';
+} from 'lit';
 
 export class LcdDigit extends LitElement {
   static get styles() {
-    return css `
+    return css /* css */`
       :host {
+        width: auto;
         display: block;
-        background-color: trasnparent;
+        background-color: transparent;
         --dot-size: 16px;
+        --dot-margin: calc(var(--dot-size) / 8);
       }
       .digit {
+        width: calc(var(--dot-size) * 4 + calc(var(--dot-margin) * 8));
         display: inline-block;
         margin: 10px;
         transform: skewX(-2deg);
@@ -21,7 +24,7 @@ export class LcdDigit extends LitElement {
       .digit .cell {
         width: var(--dot-size);
         height: var(--dot-size);
-        margin: 2px;
+        margin: var(--dot-margin);
         background-color: red;
         border-radius: 2px;
         display: inline-block;
@@ -31,7 +34,11 @@ export class LcdDigit extends LitElement {
         opacity: 1;
       }
       .dot { 
-        position:relative; background:#FF0; z-index:10; width:var(--dot-size); height:var(--dot-size); max-width:16px; max-height:16px; 
+        position: relative; 
+        background: #ff0; 
+        z-index: 10;
+        width: var(--dot-size); 
+        height: var(--dot-size);  
       }
     `;
   }
@@ -39,21 +46,26 @@ export class LcdDigit extends LitElement {
   static get properties() {
     return {
       display: {
-        type: Array
-      },
-      dotSize: {
-        type: Number
-      },
-      typeClass: {
-        type: String
+        type: Array,
       },
       digit: {
-        type: Number
-      }
+        type: String,
+      },
+      count: {
+        type: Boolean,
+      },
+      lcdReference: {
+        type: String,
+        attribute: 'lcd-reference'
+      },
+      maxValue: {
+        type: Number,
+        attribute: 'max-value'
+      },
     };
   }
 
-  constructor(digit) {
+  constructor() {
     super();
     this.display = {
       'empty': [
@@ -154,24 +166,82 @@ export class LcdDigit extends LitElement {
         0, 0, 0, 1,
         0, 0, 0, 1,
         0, 0, 0, 1
-      ]
+      ],
+      ':': [
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+        0, 0, 1, 0,
+        0, 0, 0, 0,
+        0, 0, 1, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 0
+      ],
     };
-    this.digit = digit;
-    this.dotSize = 16;
-    this.typeClass = '';
+    this.digit = 'empty';
+    this.count= false;
+    this.lcdReference = '';
+
+    this.zeroEvent = this.zeroEvent.bind(this);
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    document.addEventListener('lcd-digit__count-reset', this.zeroEvent);
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    document.removeEventListener('lcd-digit__count-reset', this.zeroEvent);
   }
 
   firstUpdated() {
     this.renderDigit();
+    if (this.count) {
+      this.counter();
+    }
   }
 
   updated() {
     this.renderDigit();
   }
 
+  zeroEvent(e) {
+    e.stopPropagation();
+    const reference = e.detail.id;
+    if (reference === this.lcdReference) {
+      this.addOne();
+    }
+  }
+
+  addOne() {
+    this.digit = (this.digit + 1) % 10;
+    if (this.digit === this.maxValue) {
+      this.digit = 0;
+      this._checkValue();
+    }
+  }
+
+  _checkValue() {
+    if (this.digit === 0) {
+      document.dispatchEvent(new CustomEvent('lcd-digit__count-reset', {
+        detail: {
+          id: this.id
+        }
+      }));
+    }
+  }
+
+  counter() {
+    setInterval(() => {
+      this.addOne();
+      this._checkValue();
+    }, 1000);
+  }
+
   renderDigit() {
+    this.digit = (!isNaN(parseInt(this.digit, 10) % 10)) ? parseInt(this.digit, 10) % 10 : this.digit;
     const container = this.shadowRoot.querySelector('#digit');
-    const matrix = this.display[(!isNaN(parseInt(this.digit, 10) % 10)) ? parseInt(this.digit, 10) % 10 : 'empty'];
+    const matrix = this.display[this.digit];
     const {
       children
     } = container;
@@ -185,8 +255,6 @@ export class LcdDigit extends LitElement {
   }
 
   render() {
-    const dotDecPos = (this.dotSize > 16) ? -16 : -parseInt(this.dotSize, 10);
-    const comma = (this.typeClass === 'second') ? html `<div class="dot" style="top:${dotDecPos}px; left:${dotDecPos}px;">O</div>` : '';
     const nDots = [...Array(28).keys()];
     return html `
       <style>
@@ -197,9 +265,8 @@ export class LcdDigit extends LitElement {
           width: ${this.dotSize}px;
           height: ${this.dotSize}px;
       </style>
-      <div id="digit" class="digit ${this.typeClass}">
+      <div id="digit" class="digit">
         ${nDots.map(() => html`<div class="cell"></div>`)}
-        ${comma}
       </div>
     `;
   }
