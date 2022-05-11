@@ -182,16 +182,19 @@ export class LcdDigit extends LitElement {
     this.lcdReference = '';
 
     this.zeroEvent = this.zeroEvent.bind(this);
+    this.setDigitEvent = this.setDigitEvent.bind(this);
   }
 
   connectedCallback() {
     super.connectedCallback();
     document.addEventListener('lcd-digit__count-reset', this.zeroEvent);
+    document.addEventListener('lcd-digit__set-digit', this.setDigitEvent);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     document.removeEventListener('lcd-digit__count-reset', this.zeroEvent);
+    document.removeEventListener('lcd-digit__set-digit', this.setDigitEvent);
   }
 
   firstUpdated() {
@@ -203,6 +206,18 @@ export class LcdDigit extends LitElement {
 
   updated() {
     this.renderDigit();
+  }
+
+  setDigitEvent(e) {
+    e.stopPropagation();
+    const reference = e.detail.id;
+    if (reference === this.id) {
+      this.setDigit(e.detail.digit);
+    }
+  }
+
+  setDigit(digit) {
+    this.digit = digit;
   }
 
   zeroEvent(e) {
