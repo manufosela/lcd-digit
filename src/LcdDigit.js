@@ -230,7 +230,7 @@ export class LcdDigit extends LitElement {
 
   addOne() {
     this.digit = (this.digit + 1) % 10;
-    if (this.digit === this.maxValue) {
+    if (this.digit > this.maxValue) {
       this.digit = 0;
       this._checkValue();
     }
