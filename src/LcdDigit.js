@@ -229,8 +229,8 @@ export class LcdDigit extends LitElement {
   zeroEvent(e) {
     e.stopPropagation();
     const reference = e.detail.id;
-    this.increment = (e.detail.increment) ? e.detail.increment : 1;
     if (reference === this.lcdReference) {
+      this.increment = (e.detail.increment) ? e.detail.increment : 1;
       this.modifyOne();
     }
   }
@@ -271,7 +271,7 @@ export class LcdDigit extends LitElement {
       children
     } = container;
     const len = matrix.length;
-    for (let i = 0; i < len; i++) {
+    for (let i = 0; i < len; i+=1) {
       children[i].classList.remove('on');
       if (matrix[i]) {
         children[i].classList.add('on');
