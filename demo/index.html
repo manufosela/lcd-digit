@@ -1,16 +1,14 @@
 <!DOCTYPE html>
 
 <html lang="en-GB">
-
   <head>
-
     <meta charset="utf-8" />
 
     <style>
       body {
         background: #fafafa;
       }
-      #demo {
+      section {
         width: 100vw;
         display: flex;
         flex-direction: row;
@@ -21,26 +19,42 @@
     </style>
 
     <script type="module" src="../lcd-digit.js"></script>
-
   </head>
 
   <body>
+    <section>
+      <lcd-digit
+        id="dec-minutes1"
+        digit="0"
+        lcd-reference="unit-minutes1"
+        max-value="5"
+      ></lcd-digit>
 
-    <div id="demo">
-
-      <lcd-digit id="dec-minutes" digit="0" lcd-reference="dec-minutes"></lcd-digit>
-
-      <lcd-digit id="unit-minutes" digit="0" lcd-reference="dec-seconds"></lcd-digit>
+      <lcd-digit id="unit-minutes1" digit="0" lcd-reference="dec-seconds1"></lcd-digit>
 
       <lcd-digit digit=":"></lcd-digit>
 
-      <lcd-digit id="dec-seconds" digit="5" lcd-reference="unit-seconds" max-value="5"> </lcd-digit>
+      <lcd-digit id="dec-seconds1" digit="1" lcd-reference="unit-seconds1" max-value="5">
+      </lcd-digit>
 
-      <lcd-digit id="unit-seconds" digit="2" count></lcd-digit>
+      <lcd-digit id="unit-seconds1" digit="2" count increment="-1"></lcd-digit>
+    </section>
+    <section>
+      <lcd-digit
+        id="dec-minutes2"
+        digit="0"
+        lcd-reference="unit-minutes2"
+        max-value="5"
+      ></lcd-digit>
 
-    </div>
+      <lcd-digit id="unit-minutes2" digit="0" lcd-reference="dec-seconds2"></lcd-digit>
 
+      <lcd-digit digit=":"></lcd-digit>
+
+      <lcd-digit id="dec-seconds2" digit="4" lcd-reference="unit-seconds2" max-value="5">
+      </lcd-digit>
+
+      <lcd-digit id="unit-seconds2" digit="8" count></lcd-digit>
+    </section>
   </body>
-
 </html>
-

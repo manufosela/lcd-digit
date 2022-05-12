@@ -50,6 +50,7 @@ export class LcdDigit extends LitElement {
       },
       digit: {
         type: String,
+        reflect: true,
       },
       count: {
         type: Boolean,
@@ -61,6 +62,9 @@ export class LcdDigit extends LitElement {
       maxValue: {
         type: Number,
         attribute: 'max-value'
+      },
+      increment: {
+        type: Number,
       },
     };
   }
@@ -180,6 +184,8 @@ export class LcdDigit extends LitElement {
     this.digit = 'empty';
     this.count= false;
     this.lcdReference = '';
+    this.increment = 1;
+    this.maxValue = 9;
 
     this.zeroEvent = this.zeroEvent.bind(this);
     this.setDigitEvent = this.setDigitEvent.bind(this);
@@ -223,24 +229,29 @@ export class LcdDigit extends LitElement {
   zeroEvent(e) {
     e.stopPropagation();
     const reference = e.detail.id;
+    this.increment = (e.detail.increment) ? e.detail.increment : 1;
     if (reference === this.lcdReference) {
-      this.addOne();
+      this.modifyOne();
     }
   }
 
-  addOne() {
-    this.digit = (this.digit + 1) % 10;
+  modifyOne() {
+    this.digit = (this.digit + this.increment) % 10;
     if (this.digit > this.maxValue) {
       this.digit = 0;
-      this._checkValue();
     }
+    if (this.digit < 0) {
+      this.digit = this.maxValue;
+    }
+    this._checkValue();
   }
 
   _checkValue() {
-    if (this.digit === 0) {
+    if ((this.digit === 0 && this.increment === 1) || (this.digit === this.maxValue && this.increment === -1)) {
       document.dispatchEvent(new CustomEvent('lcd-digit__count-reset', {
         detail: {
-          id: this.id
+          id: this.id,
+          increment: this.increment
         }
       }));
     }
@@ -248,8 +259,7 @@ export class LcdDigit extends LitElement {
 
   counter() {
     setInterval(() => {
-      this.addOne();
-      this._checkValue();
+      this.modifyOne();
     }, 1000);
   }
 
