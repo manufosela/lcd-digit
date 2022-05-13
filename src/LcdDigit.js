@@ -119,7 +119,8 @@ export class LcdDigit extends LitElement {
   }
 
   renderDigit() {
-    this.digit = (!isNaN(parseInt(this.digit, 10) % 10)) ? parseInt(this.digit, 10) % 10 : (this.digit === ':') ? this.digit : 'empty';
+    const colonValue = (this.digit === ':') ? this.digit : 'empty';
+    this.digit = (!isNaN(parseInt(this.digit, 10) % 10)) ? parseInt(this.digit, 10) % 10 : colonValue;
     const container = this.shadowRoot.querySelector('#digit');
     const matrix = this.display[this.digit];
     const {
