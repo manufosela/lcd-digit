@@ -50,11 +50,15 @@ export class LcdDigit extends LitElement {
   _addEvents() {
     document.addEventListener('lcd-digit__count-reset', this.zeroEvent);
     document.addEventListener('lcd-digit__set-digit', this.setDigitEvent);
+    document.addEventListener('lcd-digit__start-count', this.counter);
+    document.addEventListener('lcd-digit__stop-count', this.stopCounter);
   }
 
   _removeEvents() {
     document.removeEventListener('lcd-digit__count-reset', this.zeroEvent);
     document.removeEventListener('lcd-digit__set-digit', this.setDigitEvent);
+    document.removeEventListener('lcd-digit__start-count', this.counter);
+    document.removeEventListener('lcd-digit__stop-count', this.stopCounter);
   }
 
   connectedCallback() {
@@ -129,9 +133,15 @@ export class LcdDigit extends LitElement {
   }
 
   counter() {
+    this.counter = true;
     this.intervalId = setInterval(() => {
       this.modifyOne();
     }, 1000);
+  }
+
+  stopCounter() {
+    clearInterval(this.intervalId);
+    this.counter = false;
   }
 
   renderDigit() {
@@ -161,6 +171,7 @@ export class LcdDigit extends LitElement {
         .digit .cell {
           width: ${this.dotSize}px;
           height: ${this.dotSize}px;
+        }
       </style>
       <div id="digit" class="digit">
         ${nDots.map(() => html`<div class="cell"></div>`)}
