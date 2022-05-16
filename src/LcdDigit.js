@@ -47,16 +47,24 @@ export class LcdDigit extends LitElement {
     this.setDigitEvent = this.setDigitEvent.bind(this);
   }
 
-  connectedCallback() {
-    super.connectedCallback();
+  _addEvents() {
     document.addEventListener('lcd-digit__count-reset', this.zeroEvent);
     document.addEventListener('lcd-digit__set-digit', this.setDigitEvent);
   }
 
-  disconnectedCallback() {
-    super.disconnectedCallback();
+  _removeEvents() {
     document.removeEventListener('lcd-digit__count-reset', this.zeroEvent);
     document.removeEventListener('lcd-digit__set-digit', this.setDigitEvent);
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    this._addEvents();
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this._removeEvents();
   }
 
   firstUpdated() {
