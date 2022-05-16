@@ -1,5 +1,5 @@
 import { html, LitElement } from 'lit';
-import { lcdDigitStyles } from './lcd-digit-styles.js'
+import { lcdDigitStyles } from './lcd-digit-styles.js';
 import { numbersLcdMatrix } from './numbersLcdMatrix.js';
 
 export class LcdDigit extends LitElement {
@@ -21,11 +21,11 @@ export class LcdDigit extends LitElement {
       },
       lcdReference: {
         type: String,
-        attribute: 'lcd-reference'
+        attribute: 'lcd-reference',
       },
       maxValue: {
         type: Number,
-        attribute: 'max-value'
+        attribute: 'max-value',
       },
       increment: {
         type: Number,
@@ -37,10 +37,11 @@ export class LcdDigit extends LitElement {
     super();
     this.display = numbersLcdMatrix;
     this.digit = 'empty';
-    this.count= false;
+    this.count = false;
     this.lcdReference = '';
     this.increment = 1;
     this.maxValue = 9;
+    this.intervalId = null;
 
     this.zeroEvent = this.zeroEvent.bind(this);
     this.setDigitEvent = this.setDigitEvent.bind(this);
@@ -62,6 +63,8 @@ export class LcdDigit extends LitElement {
     this.renderDigit();
     if (this.count) {
       this.counter();
+    } else {
+      clearInterval(this.intervalId);
     }
   }
 
@@ -85,7 +88,7 @@ export class LcdDigit extends LitElement {
     e.stopPropagation();
     const reference = e.detail.id;
     if (reference === this.lcdReference) {
-      this.increment = (e.detail.increment) ? e.detail.increment : 1;
+      this.increment = e.detail.increment ? e.detail.increment : 1;
       this.modifyOne();
     }
   }
@@ -102,32 +105,37 @@ export class LcdDigit extends LitElement {
   }
 
   _checkValue() {
-    if ((this.digit === 0 && this.increment === 1) || (this.digit === this.maxValue && this.increment === -1)) {
-      document.dispatchEvent(new CustomEvent('lcd-digit__count-reset', {
-        detail: {
-          id: this.id,
-          increment: this.increment
-        }
-      }));
+    if (
+      (this.digit === 0 && this.increment === 1) ||
+      (this.digit === this.maxValue && this.increment === -1)
+    ) {
+      document.dispatchEvent(
+        new CustomEvent('lcd-digit__count-reset', {
+          detail: {
+            id: this.id,
+            increment: this.increment,
+          },
+        })
+      );
     }
   }
 
   counter() {
-    setInterval(() => {
+    this.intervalId = setInterval(() => {
       this.modifyOne();
     }, 1000);
   }
 
   renderDigit() {
-    const colonValue = (this.digit === ':') ? this.digit : 'empty';
-    this.digit = (!isNaN(parseInt(this.digit, 10) % 10)) ? parseInt(this.digit, 10) % 10 : colonValue;
+    const colonValue = this.digit === ':' ? this.digit : 'empty';
+    this.digit = !Number.isNaN(parseInt(this.digit, 10) % 10)
+      ? parseInt(this.digit, 10) % 10
+      : colonValue;
     const container = this.shadowRoot.querySelector('#digit');
     const matrix = this.display[this.digit];
-    const {
-      children
-    } = container;
+    const { children } = container;
     const len = matrix.length;
-    for (let i = 0; i < len; i+=1) {
+    for (let i = 0; i < len; i += 1) {
       children[i].classList.remove('on');
       if (matrix[i]) {
         children[i].classList.add('on');
@@ -137,10 +145,10 @@ export class LcdDigit extends LitElement {
 
   render() {
     const nDots = [...Array(28).keys()];
-    return html `
+    return html`
       <style>
         .digit {
-          width: ${this.dotSize*5}px;
+          width: ${this.dotSize * 5}px;
         }
         .digit .cell {
           width: ${this.dotSize}px;
