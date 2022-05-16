@@ -14,7 +14,10 @@
         flex-direction: row;
       }
       lcd-digit {
-        --dot-size: 16px;
+        --dot-size: 10px;
+      }
+      lcd-digit:not(:defined) {
+        display: none;
       }
     </style>
 
