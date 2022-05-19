@@ -133,7 +133,7 @@ export class LcdDigit extends LitElement {
   }
 
   counter() {
-    this.counter = true;
+    this.count = true;
     this.intervalId = setInterval(() => {
       this.modifyOne();
     }, 1000);
@@ -141,7 +141,7 @@ export class LcdDigit extends LitElement {
 
   stopCounter() {
     clearInterval(this.intervalId);
-    this.counter = false;
+    this.count = false;
   }
 
   renderDigit() {
