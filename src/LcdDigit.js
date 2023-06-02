@@ -29,6 +29,7 @@ export class LcdDigit extends LitElement {
       },
       increment: {
         type: Number,
+        attribute: 'increment',
       },
     };
   }
