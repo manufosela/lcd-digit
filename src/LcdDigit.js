@@ -100,7 +100,6 @@ export class LcdDigit extends LitElement {
     e.stopPropagation();
     const reference = e.detail.id;
     if (reference === this.lcdReference) {
-      this.increment = e.detail.increment ? e.detail.increment : 1;
       this.modifyOne();
     }
   }
@@ -118,7 +117,7 @@ export class LcdDigit extends LitElement {
 
   _checkValue() {
     if (
-      (this.digit === 0 && this.increment === 1) ||
+      (this.digit === 0) ||
       (this.digit === this.maxValue && this.increment === -1)
     ) {
       document.dispatchEvent(
