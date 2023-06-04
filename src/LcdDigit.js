@@ -1,3 +1,6 @@
+/* eslint-disable spaced-comment */
+/* eslint-disable no-console */
+/* eslint-disable no-unused-expressions */
 import { html, LitElement } from 'lit';
 import { lcdDigitStyles } from './lcd-digit-styles.js';
 import { numbersLcdMatrix } from './numbersLcdMatrix.js';
@@ -42,6 +45,7 @@ export class LcdDigit extends LitElement {
     this.increment = 1;
     this.maxValue = 9;
     this.intervalId = null;
+    
 
     this.zeroEvent = this.zeroEvent.bind(this);
     this.setDigitEvent = this.setDigitEvent.bind(this);
@@ -100,6 +104,12 @@ export class LcdDigit extends LitElement {
     e.stopPropagation();
     const reference = e.detail.id;
     if (reference === this.lcdReference) {
+      if(this.increment !==1){
+        this.increment;
+      } else {
+        this.increment = e.detail.increment ? e.detail.increment : 1;
+      }    
+      
       this.modifyOne();
     }
   }
@@ -112,13 +122,14 @@ export class LcdDigit extends LitElement {
     if (this.digit < 0) {
       this.digit = this.maxValue;
     }
+    
     this._checkValue();
   }
 
   _checkValue() {
     if (
       (this.digit === 0) ||
-      (this.digit === this.maxValue && this.increment === -1)
+      (this.digit === this.maxValue && this.increment === -1) 
     ) {
       document.dispatchEvent(
         new CustomEvent('lcd-digit__count-reset', {
